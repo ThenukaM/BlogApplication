@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js?v=6" defer></script>
+    <title>Register - Byte Diaries</title>
+</head>
+<body class="auth-page">
+    <nav class="navbar" id="mainNav">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><img src="Logo.png" alt="Logo"></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#blogGrid">Categories</a></li>
+                <li><a href="about.html">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Join <span class="gradient-text">Byte Diaries</span></h2>
+                <p>Create an account to start publishing articles</p>
+            </div>
+
+            <div id="authAlert" class="auth-alert hidden"></div>
+
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="regName">Full Name *</label>
+                    <input type="text" id="regName" name="name" required placeholder="Alex Rivera">
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail">Email Address *</label>
+                    <input type="email" id="regEmail" name="email" required placeholder="alex@bytediaries.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">Password *</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="regPassword" name="password" required minlength="6" placeholder="Min. 6 characters">
+                        <button type="button" class="toggle-password-btn" aria-label="Toggle password visibility">
+                            <svg class="eye-icon eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <svg class="eye-icon eye-closed hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regConfirmPassword">Confirm Password *</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="regConfirmPassword" name="confirm_password" required minlength="6" placeholder="Re-enter password">
+                        <button type="button" class="toggle-password-btn" aria-label="Toggle password visibility">
+                            <svg class="eye-icon eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <svg class="eye-icon eye-closed hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary auth-submit-btn" id="registerSubmitBtn">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already registered? <a href="login.html" class="auth-link">Sign In Here</a></p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <!-- Column 1: Brand & Bio -->
+                <div class="footer-col brand-col">
+                    <a href="index.html" class="footer-logo"><img src="Logo.png" alt="Byte Diaries Logo"></a>
+                    <p class="footer-bio">
+                        Exploring the frontiers of Artificial Intelligence, Web Development, and Cloud Architecture. Insights written for modern software engineers.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="Facebook">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="X (Twitter)">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="LinkedIn">
+                            <i class="fa-brands fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="GitHub">
+                            <i class="fa-brands fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Column 2: Categories -->
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Categories</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html#blogGrid">Web Development</a></li>
+                        <li><a href="index.html#blogGrid">Artificial Intelligence</a></li>
+                        <li><a href="index.html#blogGrid">Cloud Architecture</a></li>
+                        <li><a href="index.html#blogGrid">Cybersecurity</a></li>
+                        <li><a href="index.html#blogGrid">Tech News</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Quick Links -->
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="create-post.html">Write Article</a></li>
+                        <li><a href="login.html">Sign In</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Bar -->
+            <div class="footer-bottom">
+                <p class="copyright">&copy; 2026 Byte Diaries. All rights reserved.</p>
+                <p class="developer-credit">
+                    Developed by <span class="developer-name">Thenuka Mandinu</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
