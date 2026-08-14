@@ -1,14 +1,3 @@
--- ==========================================
--- Byte Diaries - Database Schema & Seed Data
--- Assignment Schema:
---   1. user (id, username, email, password, role)
---   2. blogPost (id, user_id, title, content, created_at, updated_at)
--- ==========================================
-
-CREATE DATABASE IF NOT EXISTS `byte_diaries` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `byte_diaries`;
-
--- Table structure for table `user`
 CREATE TABLE IF NOT EXISTS `user` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `username` VARCHAR(100) NOT NULL,
