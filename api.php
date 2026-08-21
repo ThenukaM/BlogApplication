@@ -258,6 +258,16 @@ if ($action === 'create_post' || ($method === 'POST' && empty($action))) {
     }
 
     if (empty($title) || empty($content)) {
+        // Handle case where uploaded file exceeds PHP post_max_size limit
+        if (isset($_SERVER['CONTENT_LENGTH']) && (int)$_SERVER['CONTENT_LENGTH'] > 0 && empty($_POST) && empty($_FILES)) {
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error'   => 'Uploaded image exceeds the hosting server upload size limit. Please upload an image under 2MB.'
+            ]);
+            exit;
+        }
+
         http_response_code(400);
         echo json_encode([
             'success' => false,
@@ -299,12 +309,12 @@ if ($action === 'create_post' || ($method === 'POST' && empty($action))) {
             $uploadFileDir = __DIR__ . '/uploads/';
             
             if (!is_dir($uploadFileDir)) {
-                mkdir($uploadFileDir, 0755, true);
+                @mkdir($uploadFileDir, 0755, true);
             }
 
             $dest_path = $uploadFileDir . $newFileName;
 
-            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            if (@move_uploaded_file($fileTmpPath, $dest_path)) {
                 $image_url = 'uploads/' . $newFileName;
             }
         }

@@ -927,11 +927,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         created_at: new Date().toISOString()
       };
 
-      // 1. Write to BOTH localStorage and sessionStorage bridge for maximum reliability
-      saveUserPost(localPost);
-      setLastPublishedPost(localPost);
-
-      // 2. Also send to API in the background if server is running
+      // 1. Send to live database API
       try {
         const apiFormData = new FormData();
         apiFormData.append('title', postTitle);
@@ -942,7 +938,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 10000);
+        const timer = setTimeout(() => controller.abort(), 60000); // 60s timeout for live hosting upload
 
         const response = await fetch('api.php?action=create_post', {
           method: 'POST',
@@ -954,22 +950,31 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (response.ok) {
           const result = await response.json();
           if (result.success && result.data) {
-            // Update saved post with real backend database ID and image path if available
             localPost.id = result.data.id;
             if (result.data.image_url) localPost.image_url = result.data.image_url;
             if (result.data.username) localPost.username = result.data.username;
             if (result.data.author_name) localPost.author_name = result.data.author_name;
-            saveUserPost(localPost);
           }
+        } else {
+          const errData = await response.json().catch(() => null);
+          const msg = errData?.error || 'Server error creating post.';
+          showAlert(formAlert, msg, 'error');
+          publishBtn.disabled = false;
+          publishBtn.textContent = 'Publish Article';
+          return;
         }
       } catch (err) {
         console.warn('Backend create_post offline/delayed, stored locally.', err);
       }
 
+      // 2. Write to local state bridge
+      saveUserPost(localPost);
+      setLastPublishedPost(localPost);
+
       showToast('Article published successfully!');
       setTimeout(() => {
         window.location.href = 'index.html';
-      }, 600);
+      }, 500);
     });
   }
 
