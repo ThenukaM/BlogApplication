@@ -14,6 +14,154 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // 1b. Scroll to Top Floating Button Initialization
+  function initScrollToTop() {
+    let scrollBtn = document.getElementById('scrollToTopBtn');
+    if (!scrollBtn) {
+      scrollBtn = document.createElement('button');
+      scrollBtn.id = 'scrollToTopBtn';
+      scrollBtn.className = 'scroll-to-top-btn';
+      scrollBtn.setAttribute('aria-label', 'Scroll to top');
+      scrollBtn.setAttribute('title', 'Scroll to top');
+      scrollBtn.setAttribute('type', 'button');
+      scrollBtn.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 15l-6-6-6 6"/>
+        </svg>
+      `;
+      document.body.appendChild(scrollBtn);
+    }
+
+    const toggleScrollBtn = () => {
+      if (window.scrollY > 300) {
+        scrollBtn.classList.add('visible');
+      } else {
+        scrollBtn.classList.remove('visible');
+      }
+    };
+
+    window.addEventListener('scroll', toggleScrollBtn, { passive: true });
+    toggleScrollBtn();
+
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+  }
+
+  initScrollToTop();
+
+  // Mobile Hamburger Menu Toggle & Full-Screen Overlay System
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mainNavbar = document.getElementById('mainNav');
+
+  function initMobileOverlay() {
+    let overlay = document.getElementById('mobileNavOverlay');
+    if (!overlay) {
+      overlay = document.createElement('div');
+      overlay.id = 'mobileNavOverlay';
+      overlay.className = 'mobile-nav-overlay';
+      overlay.innerHTML = `
+        <div class="mobile-nav-content">
+          <ul class="mobile-nav-links" id="mobileNavLinks"></ul>
+          <div class="mobile-nav-auth" id="mobileNavAuth"></div>
+        </div>
+      `;
+      document.body.appendChild(overlay);
+    }
+    syncMobileOverlay();
+    return overlay;
+  }
+
+  function syncMobileOverlay() {
+    const mobileLinksUl = document.getElementById('mobileNavLinks');
+    const mobileAuthDiv = document.getElementById('mobileNavAuth');
+
+    // Sync Navigation Links
+    if (mobileLinksUl) {
+      const desktopNavLinks = document.querySelectorAll('.nav-links li a');
+      const currentPath = window.location.pathname.toLowerCase();
+      mobileLinksUl.innerHTML = '';
+      desktopNavLinks.forEach(link => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = link.getAttribute('href');
+        a.textContent = link.textContent;
+        const href = (a.getAttribute('href') || '').toLowerCase();
+        if (
+          (href === 'index.html' && (currentPath.endsWith('/index.html') || currentPath.endsWith('/blog/') || currentPath.endsWith('/blog'))) ||
+          (href !== 'index.html' && !href.startsWith('#') && currentPath.endsWith(href))
+        ) {
+          a.classList.add('active');
+        }
+        a.addEventListener('click', closeMobileMenu);
+        li.appendChild(a);
+        mobileLinksUl.appendChild(li);
+      });
+    }
+
+    // Sync Auth Area Buttons / User Profile
+    if (mobileAuthDiv) {
+      const desktopAuth = document.getElementById('navAuthArea');
+      if (desktopAuth) {
+        mobileAuthDiv.innerHTML = desktopAuth.innerHTML;
+        const mobileProfileBtn = mobileAuthDiv.querySelector('#profileBtn');
+        const mobileProfileDropdown = mobileAuthDiv.querySelector('#profileDropdown');
+        if (mobileProfileBtn && mobileProfileDropdown) {
+          mobileProfileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            mobileProfileDropdown.classList.toggle('active');
+          });
+        }
+        const mobileLogoutBtn = mobileAuthDiv.querySelector('#logoutBtn, .logout-btn');
+        if (mobileLogoutBtn) {
+          mobileLogoutBtn.addEventListener('click', () => {
+            closeMobileMenu();
+            handleLogout();
+          });
+        }
+      }
+    }
+  }
+
+  function openMobileMenu() {
+    const overlay = initMobileOverlay();
+    if (mainNavbar) mainNavbar.classList.add('mobile-nav-open');
+    if (overlay) overlay.classList.add('active');
+    document.body.classList.add('mobile-menu-active');
+  }
+
+  function closeMobileMenu() {
+    const overlay = document.getElementById('mobileNavOverlay');
+    if (mainNavbar) mainNavbar.classList.remove('mobile-nav-open');
+    if (overlay) overlay.classList.remove('active');
+    document.body.classList.remove('mobile-menu-active');
+  }
+
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const overlay = document.getElementById('mobileNavOverlay');
+      if (overlay && overlay.classList.contains('active')) {
+        closeMobileMenu();
+      } else {
+        openMobileMenu();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMobileMenu();
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768) {
+        closeMobileMenu();
+      }
+    });
+  }
+
   // Highlight active navbar link dynamically
   const currentPath = window.location.pathname.toLowerCase();
   const navLinks = document.querySelectorAll('.nav-links li a');
@@ -186,6 +334,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <a href="register.html" class="auth-nav-btn btn-register">Register</a>
       `;
     }
+    syncMobileOverlay();
   }
 
   async function handleLogout() {
@@ -256,7 +405,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let basePosts = [];
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 2000);
+      const timer = setTimeout(() => controller.abort(), 10000);
       const response = await fetch('api.php?action=get_posts', { signal: controller.signal });
       clearTimeout(timer);
       if (response.ok) {
@@ -380,7 +529,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       try {
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 2000);
+        const timer = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch('api.php?action=login', {
           method: 'POST',
@@ -447,7 +596,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       try {
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 2000);
+        const timer = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch('api.php?action=register', {
           method: 'POST',
@@ -470,35 +619,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           showAlert(alertBox, result.error || 'Email address is already registered.', 'error');
           return;
         } else {
-          // Local fallback account creation if server/database unavailable
-          const newDemoUser = {
-            id: Date.now(),
-            name: name,
-            username: name,
-            email: email,
-            avatar: getInitials(name)
-          };
-          setStoredUser(newDemoUser);
-          showAlert(alertBox, 'Account created successfully! Redirecting...', 'success');
-          setTimeout(() => {
-            window.location.href = 'index.html';
-          }, 800);
+          showAlert(alertBox, (result && result.error) ? result.error : 'Registration failed on server.', 'error');
           return;
         }
       } catch (err) {
-        // Network failure / offline mode fallback
-        const newDemoUser = {
-          id: Date.now(),
-          name: name,
-          username: name,
-          email: email,
-          avatar: getInitials(name)
-        };
-        setStoredUser(newDemoUser);
-        showAlert(alertBox, 'Account created successfully! Redirecting...', 'success');
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 800);
+        console.error('Registration error:', err);
+        showAlert(alertBox, 'Unable to connect to live database server. Please try again.', 'error');
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Create Account';
@@ -506,6 +632,108 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+
+  function prepareContentForEditor(content) {
+    if (!content) return '';
+    const str = String(content).trim();
+    if (!str) return '';
+
+    // If content already contains HTML block elements, preserve as is
+    if (/<(p|h[1-6]|ul|ol|blockquote|div|br)\b[^>]*>/i.test(str)) {
+      return str;
+    }
+
+    // Convert plain text paragraph breaks (\n\n) into HTML <p> paragraph blocks
+    const normalized = str.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const blocks = normalized.split(/\n\s*\n/).filter(b => b.trim() !== '');
+    if (blocks.length === 0) return `<p>${escapeHTML(str)}</p>`;
+    return blocks.map(block => `<p>${escapeHTML(block.trim()).replace(/\n/g, '<br>')}</p>`).join('');
+  }
+
+  // --- Rich Text Blog Editor Handler ---
+  function setupRichEditor(toolbarElem, editorElem, hiddenInputElem) {
+    if (!toolbarElem || !editorElem || !hiddenInputElem) return;
+
+    // Prevent duplicate setup
+    if (editorElem.dataset.richSetup === 'true') return;
+    editorElem.dataset.richSetup = 'true';
+
+    // Execute Formatting Commands
+    toolbarElem.addEventListener('click', (e) => {
+      const btn = e.target.closest('.editor-btn');
+      if (!btn) return;
+
+      e.preventDefault();
+      const command = btn.getAttribute('data-command');
+      const value = btn.getAttribute('data-value') || null;
+
+      if (!command) return;
+
+      editorElem.focus();
+
+      if (command === 'formatBlock') {
+        document.execCommand(command, false, `<${value}>`);
+      } else {
+        document.execCommand(command, false, value);
+      }
+
+      syncEditorContent(editorElem, hiddenInputElem);
+      updateToolbarActiveStates(toolbarElem);
+    });
+
+    const sync = () => {
+      syncEditorContent(editorElem, hiddenInputElem);
+      updateToolbarActiveStates(toolbarElem);
+    };
+
+    editorElem.addEventListener('input', sync);
+    editorElem.addEventListener('keyup', sync);
+    editorElem.addEventListener('mouseup', () => updateToolbarActiveStates(toolbarElem));
+
+    // Handle Paste to preserve paragraph breaks cleanly
+    editorElem.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+      if (!text) return;
+      const formatted = prepareContentForEditor(text);
+      document.execCommand('insertHTML', false, formatted);
+      sync();
+    });
+  }
+
+  function syncEditorContent(editorElem, hiddenInputElem) {
+    if (!editorElem || !hiddenInputElem) return;
+    const htmlContent = editorElem.innerHTML.trim();
+    hiddenInputElem.value = (htmlContent === '<br>' || htmlContent === '<p><br></p>') ? '' : htmlContent;
+  }
+
+  function updateToolbarActiveStates(toolbarElem) {
+    if (!toolbarElem) return;
+    const buttons = toolbarElem.querySelectorAll('.editor-btn');
+    buttons.forEach(btn => {
+      const command = btn.getAttribute('data-command');
+      const value = btn.getAttribute('data-value');
+
+      if (!command) return;
+
+      try {
+        if (['bold', 'italic', 'underline', 'strikeThrough', 'insertUnorderedList', 'insertOrderedList'].includes(command)) {
+          if (document.queryCommandState(command)) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        } else if (command === 'formatBlock' && value) {
+          const currentBlock = document.queryCommandValue('formatBlock');
+          if (currentBlock && currentBlock.toLowerCase() === value.toLowerCase()) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        }
+      } catch (err) { }
+    });
+  }
 
   // 7. Dedicated Create Post Page Handler (create-post.html)
   const dedicatedCreatePostForm = document.getElementById('dedicatedCreatePostForm');
@@ -519,6 +747,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
       if (authGateNotice) authGateNotice.classList.add('hidden');
       if (createPostCard) createPostCard.classList.remove('hidden');
+    }
+
+    // Initialize Rich Editor for Create Post
+    const editorToolbar = document.getElementById('editorToolbar');
+    const richContentEditor = document.getElementById('richContentEditor');
+    const postContentInput = document.getElementById('postContent');
+
+    if (editorToolbar && richContentEditor && postContentInput) {
+      setupRichEditor(editorToolbar, richContentEditor, postContentInput);
     }
 
     // A. Custom Category Toggle & Dynamic Population
@@ -635,7 +872,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       e.preventDefault();
       const formAlert = document.getElementById('formAlert');
       const publishBtn = document.getElementById('publishArticleBtn');
-      hideAlert(formAlert);
+      if (richContentEditor && postContentInput) {
+        syncEditorContent(richContentEditor, postContentInput);
+      }
 
       const rawFormData = new FormData(dedicatedCreatePostForm);
 
@@ -703,7 +942,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 2500);
+        const timer = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch('api.php?action=create_post', {
           method: 'POST',
@@ -960,6 +1199,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function formatArticleBody(content) {
     if (!content) return '<p>No content available.</p>';
+    if (/<[a-z][\s\S]*>/i.test(content)) {
+      return content;
+    }
     const normalized = String(content).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     const blocks = normalized.split(/\n\s*\n/).filter(b => b.trim() !== '');
     if (blocks.length === 0) return `<p>${escapeHTML(content)}</p>`;
@@ -1096,11 +1338,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     const editPostContent = document.getElementById('editPostContent');
     const editFormAlert = document.getElementById('editFormAlert');
 
+    const editEditorToolbar = document.getElementById('editEditorToolbar');
+    const editRichContentEditor = document.getElementById('editRichContentEditor');
+
     if (!editPostModal) return;
 
     hideAlert(editFormAlert);
     if (editPostTitle) editPostTitle.value = post.title || '';
-    if (editPostContent) editPostContent.value = post.content || post.excerpt || '';
+
+    const initialContent = post.content || post.excerpt || '';
+    const formattedContent = prepareContentForEditor(initialContent);
+
+    if (editRichContentEditor && editPostContent) {
+      if (editEditorToolbar) {
+        setupRichEditor(editEditorToolbar, editRichContentEditor, editPostContent);
+      }
+      editRichContentEditor.innerHTML = formattedContent;
+      editPostContent.value = formattedContent;
+    } else if (editPostContent) {
+      editPostContent.value = initialContent;
+    }
 
     if (editPostCategorySelect) {
       populateCategoryDropdown(editPostCategorySelect);
@@ -1229,6 +1486,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       const saveBtn = document.getElementById('saveEditPostBtn');
       hideAlert(editFormAlert);
 
+      const editRichContentEditor = document.getElementById('editRichContentEditor');
+      const editPostContentInput = document.getElementById('editPostContent');
+      if (editRichContentEditor && editPostContentInput) {
+        syncEditorContent(editRichContentEditor, editPostContentInput);
+      }
+
       if (!currentEditPost || !currentEditPost.id) {
         showAlert(editFormAlert, 'Missing article reference.', 'error');
         return;
@@ -1261,6 +1524,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const result = await response.json();
 
         if (response.ok && result.success && result.data) {
+          saveUserPost(result.data);
           showToast('Article updated successfully!');
           closeEditModal();
           renderSinglePost(result.data);
@@ -1269,7 +1533,22 @@ document.addEventListener('DOMContentLoaded', async () => {
           showAlert(editFormAlert, result.error || 'Failed to update article.', 'error');
         }
       } catch (err) {
-        showToast('Server error updating post.');
+        const updatedLocalPost = {
+          ...currentEditPost,
+          title: rawFormData.get('title')?.trim() || currentEditPost.title,
+          category: finalCategory,
+          content: rawFormData.get('content')?.trim() || currentEditPost.content,
+          updated_at: new Date().toISOString()
+        };
+        const cleanBody = updatedLocalPost.content.replace(/<[^>]*>/g, '');
+        const words = cleanBody.split(/\s+/).filter(Boolean);
+        updatedLocalPost.excerpt = words.slice(0, 30).join(' ') + (words.length > 30 ? '...' : '');
+        updatedLocalPost.read_time = Math.max(1, Math.ceil(words.length / 200)) + ' min read';
+
+        saveUserPost(updatedLocalPost);
+        showToast('Article updated successfully!');
+        closeEditModal();
+        renderSinglePost(updatedLocalPost);
       } finally {
         saveBtn.disabled = false;
         saveBtn.textContent = 'Save Changes';

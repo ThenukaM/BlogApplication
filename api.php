@@ -19,6 +19,15 @@ require_once __DIR__ . '/config.php';
 $action = $_GET['action'] ?? '';
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Helper to execute PDO queries safely
+if (!function_exists('executePdoQuery')) {
+    function executePdoQuery($pdo, $sql, $params = []) {
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
+    }
+}
+
 // Helper to compute initials
 function getInitialsAvatar($name) {
     $parts = explode(' ', trim($name));
@@ -72,8 +81,7 @@ if ($action === 'register' && $method === 'POST') {
         $pdo = getDBConnection();
         
         // Check if email already registered
-        $checkStmt = $pdo->prepare("SELECT id FROM `user` WHERE email = :email");
-        $checkStmt->execute([':email' => $email]);
+        $checkStmt = executePdoQuery($pdo, "SELECT id FROM `user` WHERE email = :email", [':email' => $email]);
         if ($checkStmt->fetch()) {
             http_response_code(409);
             echo json_encode(['success' => false, 'error' => 'Email address is already registered.']);
@@ -82,8 +90,7 @@ if ($action === 'register' && $method === 'POST') {
 
         $avatar = getInitialsAvatar($username);
 
-        $insertStmt = $pdo->prepare("INSERT INTO `user` (username, email, password, role, avatar, created_at) VALUES (:username, :email, :password, :role, :avatar, NOW())");
-        $insertStmt->execute([
+        $insertStmt = executePdoQuery($pdo, "INSERT INTO `user` (username, email, password, role, avatar, created_at) VALUES (:username, :email, :password, :role, :avatar, NOW())", [
             ':username' => $username,
             ':email'    => $email,
             ':password' => $password,
@@ -108,7 +115,7 @@ if ($action === 'register' && $method === 'POST') {
             'message' => 'Registration successful!',
             'user'    => $userData
         ]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Registration failed: ' . $e->getMessage()]);
     }
@@ -131,8 +138,7 @@ if ($action === 'login' && $method === 'POST') {
 
     try {
         $pdo = getDBConnection();
-        $stmt = $pdo->prepare("SELECT id, username, email, password, role, avatar FROM `user` WHERE email = :email");
-        $stmt->execute([':email' => $email]);
+        $stmt = executePdoQuery($pdo, "SELECT id, username, email, password, role, avatar FROM `user` WHERE email = :email", [':email' => $email]);
         $user = $stmt->fetch();
 
         $isValidPassword = $user && ($user['password'] === $password || password_verify($password, $user['password']));
@@ -159,7 +165,7 @@ if ($action === 'login' && $method === 'POST') {
             'message' => 'Login successful!',
             'user'    => $userData
         ]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Login failed: ' . $e->getMessage()]);
     }
@@ -187,7 +193,7 @@ if ($action === 'get_posts' || ($method === 'GET' && empty($action))) {
             'count' => count($posts),
             'data' => $posts
         ]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         http_response_code(500);
         echo json_encode([
             'success' => false,
@@ -219,7 +225,7 @@ if ($action === 'get_post') {
             http_response_code(404);
             echo json_encode(['success' => false, 'error' => 'Post not found.']);
         }
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Failed to fetch post: ' . $e->getMessage()]);
     }
@@ -337,7 +343,7 @@ if ($action === 'create_post' || ($method === 'POST' && empty($action))) {
             'message' => 'Article published successfully!',
             'data'    => $newPost
         ]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         http_response_code(500);
         echo json_encode([
             'success' => false,
@@ -485,7 +491,7 @@ if ($action === 'update_post') {
             'message' => 'Article updated successfully!',
             'data'    => $updatedPost
         ]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         http_response_code(500);
         echo json_encode([
             'success' => false,
@@ -553,7 +559,7 @@ if ($action === 'delete_post' || $action === 'delete') {
             'success' => true,
             'message' => 'Article deleted successfully!'
         ]);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         http_response_code(500);
         echo json_encode([
             'success' => false,

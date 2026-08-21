@@ -1,26 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js?v=6" defer></script>
+    <script src="script.js?v=10" defer></script>
     <title>Byte Diaries</title>
 </head>
+
 <body>
     <nav class="navbar" id="mainNav">
         <div class="nav-container">
             <a href="index.html" class="logo"><img src="Logo.png" alt="Logo"></a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="#blogGrid">Categories</a></li>
                 <li><a href="about.html">About</a></li>
             </ul>
-            <!-- Auth buttons / profile dropdown rendered dynamically by script.js -->
             <div id="navAuthArea" class="nav-auth-area"></div>
         </div>
     </nav>
@@ -31,7 +38,6 @@
             <p class="hero-subtitle">Explore cutting-edge articles on AI, Web Development, and Cloud Computing.</p>
         </header>
 
-        <!-- Dynamic Blog Cards Grid Container -->
         <section id="blogGrid" class="blog-grid">
             <div class="loading-state">
                 <div class="spinner"></div>
@@ -40,33 +46,35 @@
         </section>
     </main>
 
-    <!-- Global Footer -->
     <footer class="site-footer">
         <div class="footer-container">
             <div class="footer-grid">
-                <!-- Column 1: Brand & Bio -->
                 <div class="footer-col brand-col">
                     <a href="index.html" class="footer-logo"><img src="Logo.png" alt="Byte Diaries Logo"></a>
                     <p class="footer-bio">
-                        Exploring the frontiers of Artificial Intelligence, Web Development, and Cloud Architecture. Insights written for modern software engineers.
+                        Exploring the frontiers of Artificial Intelligence, Web Development, and Cloud Architecture.
+                        Insights written for modern software engineers.
                     </p>
                     <div class="social-links">
-                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="Facebook">
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn"
+                            aria-label="Facebook">
                             <i class="fa-brands fa-facebook-f"></i>
                         </a>
-                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="X (Twitter)">
+                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn"
+                            aria-label="X (Twitter)">
                             <i class="fa-brands fa-x-twitter"></i>
                         </a>
-                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="LinkedIn">
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn"
+                            aria-label="LinkedIn">
                             <i class="fa-brands fa-linkedin-in"></i>
                         </a>
-                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn" aria-label="GitHub">
+                        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-icon-btn"
+                            aria-label="GitHub">
                             <i class="fa-brands fa-github"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- Column 2: Categories -->
                 <div class="footer-col">
                     <h4 class="footer-col-title">Categories</h4>
                     <ul class="footer-links">
@@ -78,7 +86,6 @@
                     </ul>
                 </div>
 
-                <!-- Column 3: Quick Links -->
                 <div class="footer-col">
                     <h4 class="footer-col-title">Quick Links</h4>
                     <ul class="footer-links">
@@ -90,7 +97,6 @@
                 </div>
             </div>
 
-            <!-- Footer Bottom Bar -->
             <div class="footer-bottom">
                 <p class="copyright">&copy; 2026 Byte Diaries. All rights reserved.</p>
                 <p class="developer-credit">
@@ -100,7 +106,7 @@
         </div>
     </footer>
 
-    <!-- Toast Notifications Container -->
     <div id="toastContainer" class="toast-container"></div>
 </body>
+
 </html>

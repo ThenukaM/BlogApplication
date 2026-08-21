@@ -10,7 +10,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js?v=6" defer></script>
+    <script src="script.js?v=7" defer></script>
     <title>Create Article - Byte Diaries</title>
 </head>
 
@@ -18,6 +18,11 @@
     <nav class="navbar" id="mainNav">
         <div class="nav-container">
             <a href="index.html" class="logo"><img src="Logo.png" alt="Logo"></a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle navigation menu">
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+                <span class="hamburger-bar"></span>
+            </button>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="index.html#blogGrid">Categories</a></li>
@@ -103,9 +108,50 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="postContent">Full Article Body *</label>
-                    <textarea id="postContent" name="content" rows="10" required
-                        placeholder="Write your full article body content here... Excerpt and read time will be automatically generated."></textarea>
+                    <label>Full Article Body *</label>
+                    <div class="rich-editor-wrapper">
+                        <div class="rich-editor-toolbar" id="editorToolbar">
+                            <button type="button" class="editor-btn" data-command="bold" title="Bold (Ctrl+B)">
+                                <i class="fa-solid fa-bold"></i>
+                            </button>
+                            <button type="button" class="editor-btn" data-command="italic" title="Italic (Ctrl+I)">
+                                <i class="fa-solid fa-italic"></i>
+                            </button>
+                            <button type="button" class="editor-btn" data-command="underline" title="Underline (Ctrl+U)">
+                                <i class="fa-solid fa-underline"></i>
+                            </button>
+                            <button type="button" class="editor-btn" data-command="strikeThrough" title="Strikethrough">
+                                <i class="fa-solid fa-strikethrough"></i>
+                            </button>
+                            <div class="toolbar-divider"></div>
+                            <button type="button" class="editor-btn" data-command="formatBlock" data-value="h2" title="Heading 2">
+                                H2
+                            </button>
+                            <button type="button" class="editor-btn" data-command="formatBlock" data-value="h3" title="Heading 3">
+                                H3
+                            </button>
+                            <button type="button" class="editor-btn" data-command="formatBlock" data-value="p" title="Paragraph">
+                                P
+                            </button>
+                            <div class="toolbar-divider"></div>
+                            <button type="button" class="editor-btn" data-command="insertUnorderedList" title="Bullet List">
+                                <i class="fa-solid fa-list-ul"></i>
+                            </button>
+                            <button type="button" class="editor-btn" data-command="insertOrderedList" title="Numbered List">
+                                <i class="fa-solid fa-list-ol"></i>
+                            </button>
+                            <button type="button" class="editor-btn" data-command="formatBlock" data-value="blockquote" title="Quote">
+                                <i class="fa-solid fa-quote-left"></i>
+                            </button>
+                            <div class="toolbar-divider"></div>
+                            <button type="button" class="editor-btn" data-command="removeFormat" title="Clear Formatting">
+                                <i class="fa-solid fa-eraser"></i>
+                            </button>
+                        </div>
+                        <div class="rich-editor-content" contenteditable="true" id="richContentEditor"
+                            data-placeholder="Write your article body here... Use the toolbar to format text with Bold, Italic, Underline, Headings, and Lists."></div>
+                        <textarea id="postContent" name="content" class="file-input-hidden" required></textarea>
+                    </div>
                 </div>
 
                 <div class="form-actions">
